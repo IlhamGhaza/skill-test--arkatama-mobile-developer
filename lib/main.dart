@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import 'presentation/buttom_nav_bar.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,6 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -28,10 +32,12 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
+        primaryColor: Color(0xff1572D3),
+        //Raleway in google_fonts
+
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: BottomNavBar(),
     );
   }
 }
