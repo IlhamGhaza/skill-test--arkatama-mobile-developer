@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../data/database_helper.dart';
+import '../data/datasource/passager.dart';
+import '../data/datasource/travel.dart';
+
 
 class AddPassger extends StatefulWidget {
   const AddPassger({super.key});
@@ -13,6 +17,26 @@ class _AddPassgerState extends State<AddPassger> {
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
+  final dbHelper = DatabaseHelper();
+
+  Travel? selectedTravel;
+  List<Travel> availableTravel = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadTravelServices();
+  }
+
+  Future<void> loadTravelServices() async {
+    final db = await dbHelper.database;
+    final List<Map<String, dynamic>> maps = await db.query('travel');
+    setState(() {
+      availableTravel = List.generate(maps.length, (i) {
+        return Travel.fromMap(maps[i]);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +90,46 @@ class _AddPassgerState extends State<AddPassger> {
                 ),
                 maxLines: 3,
               ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<Travel>(
+                value: selectedTravel,
+                decoration: const InputDecoration(
+                  labelText: 'Select Travel Service',
+                  border: OutlineInputBorder(),
+                ),
+                items: availableTravel.map((Travel travel) {
+                  return DropdownMenuItem<Travel>(
+                    value: travel,
+                    child: Text('${travel.namaTravel} - ${travel.rute}'),
+                  );
+                }).toList(),
+                onChanged: (Travel? value) {
+                  setState(() {
+                    selectedTravel = value;
+                  });
+                },
+                validator: (value) {
+                  if (value == null) {
+                    return 'Please select a travel service';
+                  }
+                  return null;
+                },
+              ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    // Add your save logic here
+                    final passenger = Passenger(
+                      nama: nameController.text,
+                      email: emailController.text,
+                      noTelepon: phoneController.text,
+                      alamat: addressController.text,
+                      travelId: selectedTravel?.id,
+                    );
+
+                    final db = await dbHelper.database;
+                    await db.insert('penumpang', passenger.toMap());
+                    Navigator.pop(context);
                   }
                 },
                 child: const Text('Save Passenger'),

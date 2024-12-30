@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../data/database_helper.dart';
+import '../data/datasource/travel.dart';
 
 class AddService extends StatefulWidget {
   const AddService({super.key});
@@ -15,6 +17,7 @@ class _AddServiceState extends State<AddService> {
   TimeOfDay? departureTime;
   final priceController = TextEditingController();
   final capacityController = TextEditingController();
+  final dbHelper = DatabaseHelper();
 
   @override
   Widget build(BuildContext context) {
@@ -107,9 +110,20 @@ class _AddServiceState extends State<AddService> {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    // Add your save logic here
+                    final travel = Travel(
+                      namaTravel: nameController.text,
+                      rute: routeController.text,
+                      tanggalKeberangkatan: departureDate,
+                      waktuKeberangkatan: departureTime?.format(context),
+                      harga: double.tryParse(priceController.text),
+                      kapasitas: int.tryParse(capacityController.text),
+                    );
+
+                    final db = await dbHelper.database;
+                    await db.insert('travel', travel.toMap());
+                    Navigator.pop(context);
                   }
                 },
                 child: const Text('Save Travel Service'),

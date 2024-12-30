@@ -4,6 +4,7 @@ class Passenger {
   final String? email;
   final String? noTelepon;
   final String? alamat;
+  final int? travelId;
 
   Passenger({
     this.id,
@@ -11,6 +12,7 @@ class Passenger {
     this.email,
     this.noTelepon,
     this.alamat,
+    this.travelId,
   });
 
   Map<String, dynamic> toMap() {
@@ -20,6 +22,7 @@ class Passenger {
       'email': email,
       'no_telepon': noTelepon,
       'alamat': alamat,
+      'travel_id': travelId,
     };
   }
 
@@ -30,6 +33,7 @@ class Passenger {
       email: map['email'],
       noTelepon: map['no_telepon'],
       alamat: map['alamat'],
+      travelId: map['travel_id'],
     );
   }
 }
