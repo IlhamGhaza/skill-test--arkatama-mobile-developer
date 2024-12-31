@@ -38,8 +38,9 @@ class Travel {
           ? DateTime.parse(map['tanggal_keberangkatan'])
           : null,
       waktuKeberangkatan: map['waktu_keberangkatan'],
-      harga: map['harga'],
+      harga: map['harga']?.toDouble(), // Convert int to double
       kapasitas: map['kapasitas'],
     );
   }
+
 }
